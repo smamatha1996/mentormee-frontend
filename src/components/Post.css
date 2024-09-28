@@ -1,0 +1,32 @@
+.post-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-content {
+    font-size: 1rem;
+    color: #495057;
+    word-wrap: break-word;
+}
+
+.post-actions .edit-btn,
+.post-actions .delete-btn {
+    color: #6c757d;
+    transition: color 0.3s;
+}
+
+.post-actions .edit-btn:hover,
+.post-actions .delete-btn:hover {
+    color: #007bff;
+}
+
+.icon-comment {
+    color: #17a2b8;
+}

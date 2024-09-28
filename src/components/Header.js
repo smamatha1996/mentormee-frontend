@@ -1,0 +1,49 @@
+import React from 'react';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/userSlice';
+import { FaRss, FaUser } from 'react-icons/fa'; // Import FaUser for Profile icon
+import './Header.scss';
+
+const Header = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/auth/login', { replace: true });
+    };
+
+    return (
+        <Navbar expand="lg" className="header-navbar shadow-sm">
+            <Container>
+                <Navbar.Brand href="/" className="brand-name">
+                    MentorMee
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="/" className="nav-link-custom">
+                            <FaRss className="me-1" /> Feed
+                        </Nav.Link>
+                        <Nav.Link href="/profile" className="nav-link-custom">
+                            <FaUser className="me-1" /> Profile
+                        </Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <Button
+                            variant="outline-light"
+                            className="logout-btn"
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </Button>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+    );
+};
+
+export default Header;

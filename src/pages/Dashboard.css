@@ -1,0 +1,64 @@
+.dashboard-container {
+    background-color: #f0f4f8;
+    /* Soft light background for the dashboard */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    /* Darker color for title for better contrast */
+}
+
+.user-info-card {
+    background-color: #ffffff;
+    /* White background for user info card */
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Slight shadow for elevation */
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat-card {
+    background-color: #ffffff;
+    /* White background for stat cards */
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    text-align: center;
+    padding: 20px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon {
+    color: #2980b9;
+    /* Uniform blue color for icons */
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #34495e;
+    /* Dark gray for number visibility */
+}
+
+.alert-info {
+    background-color: #d9edf7;
+    /* Light blue background for alert */
+    color: #31708f;
+    /* Dark blue for text */
+    border-color: #bce8f1;
+    /* Blue border for alert */
+}
