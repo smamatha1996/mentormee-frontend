@@ -1,0 +1,104 @@
+.comment-card {
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+
+    .comment-content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+
+        .comment-text {
+            margin: 0;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #888;
+        }
+    }
+
+    .comment-actions {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        gap: 10px;
+
+        button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            padding: 0;
+
+            svg {
+                color: #888;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: #000;
+                }
+            }
+        }
+    }
+}
+
+.edit-comment {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+
+    .comment-input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: 100%;
+
+        .input-group {
+            flex: 8; // 8 parts for the text input
+            display: flex;
+            align-items: center;
+
+            .transparent-input {
+                background-color: transparent;
+                border: none;
+                outline: none;
+                resize: none; // Disable manual resizing by the user
+                width: 100%;
+                font-size: 14px;
+                height: auto; // Auto height for textarea
+
+                &:focus {
+                    box-shadow: none;
+                    outline: none;
+                    border: none;
+                }
+            }
+        }
+
+        .comment-buttons {
+            flex: 2; // 2 parts for the buttons
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            .send-btn,
+            .cancel-btn {
+                padding: 0.25rem 0.75rem;
+                font-size: 12px;
+            }
+        }
+    }
+}

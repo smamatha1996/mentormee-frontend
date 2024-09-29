@@ -24,27 +24,24 @@ export const initDB = async () => {
     return db;
 };
 
+// Helper: Check if user exists by email or username
+const checkUserExists = async (db, { email, username }) => {
+    const store = db.transaction(USER_STORE, 'readonly').objectStore(USER_STORE);
+    const existingUserByEmail = await store.get(email);
+    const allUsers = await store.getAll();
+    const existingUserByUsername = allUsers.find((u) => u.username === username);
+
+    return { existingUserByEmail, existingUserByUsername };
+};
+
 // User Registration
 export const registerUser = async (user) => {
     const db = await initDB();
+    const { existingUserByEmail, existingUserByUsername } = await checkUserExists(db, user);
 
-    // Check if user already exists by email
-    const existingUserByEmail = await db.get(USER_STORE, user.email);
-    if (existingUserByEmail) {
-        throw new Error('User already exists with this email');
-    }
+    if (existingUserByEmail) throw new Error('User already exists with this email');
+    if (existingUserByUsername) throw new Error('User already exists with this username');
 
-    // Check if username is taken
-    const tx = db.transaction(USER_STORE, 'readonly');
-    const store = tx.objectStore(USER_STORE);
-    const users = await store.getAll();
-    const existingUserByUsername = users.find((u) => u.username === user.username);
-
-    if (existingUserByUsername) {
-        throw new Error('User already exists with this username');
-    }
-
-    // Register new user
     const newUser = {
         ...user,
         id: uuidv4(),
@@ -59,33 +56,21 @@ export const registerUser = async (user) => {
 // User Login
 export const loginUser = async ({ input, password }) => {
     const db = await initDB();
+    const store = db.transaction(USER_STORE, 'readonly').objectStore(USER_STORE);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let user;
 
-    // Check if input is an email or username
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(input)) {
-        // Input is an email
-        user = await db.get(USER_STORE, input);
-        if (!user) {
-            throw new Error('No user found with this email');
-        }
+        user = await store.get(input);
     } else {
-        // Input is a username
-        const tx = db.transaction(USER_STORE, 'readonly');
-        const store = tx.objectStore(USER_STORE);
         const allUsers = await store.getAll();
         user = allUsers.find((u) => u.username === input);
-        if (!user) {
-            throw new Error('No user found with this username');
-        }
     }
 
-    // Check if password is correct
-    if (user.password !== password) {
+    if (!user || user.password !== password) {
         throw new Error('Invalid credentials');
     }
 
-    // Generate a token and store it in localStorage
     const token = `${user.email}-${uuidv4()}`;
     localStorage.setItem('mentorMeeToken', token);
 
@@ -103,12 +88,9 @@ export const updateUser = async (email, updatedUserData) => {
     const db = await initDB();
     const tx = db.transaction(USER_STORE, 'readwrite');
     const store = tx.objectStore(USER_STORE);
-
     const user = await store.get(email);
 
-    if (!user) {
-        throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
     const updatedUser = {
         ...user,
@@ -117,7 +99,6 @@ export const updateUser = async (email, updatedUserData) => {
     };
 
     await store.put(updatedUser);
-    await tx.done;
     return updatedUser;
 };
 
@@ -131,31 +112,22 @@ export const logoutUser = () => {
 // Add a post with an author
 export const addPost = async (content, author) => {
     const db = await initDB();
-    const tx = db.transaction(POST_STORE, 'readwrite');
-    const store = tx.objectStore(POST_STORE);
-
     const post = {
-        id: uuidv4(), // Ensure a unique ID is created
-        content: content,  // Store content as a string
-        author: author,    // Store author as a string
+        id: uuidv4(),
+        content,
+        author,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
 
-    await store.add(post);
-    await tx.done;
-
+    await db.put(POST_STORE, post);
     return post;
 };
 
 // Get all posts
 export const getPosts = async () => {
     const db = await initDB();
-    const tx = db.transaction(POST_STORE, 'readonly');
-    const store = tx.objectStore(POST_STORE);
-    const posts = await store.getAll();
-    await tx.done;
-    return posts;
+    return await db.getAll(POST_STORE);
 };
 
 // Edit a post with updated content and author
@@ -163,36 +135,32 @@ export const editPost = async (postId, updatedContent, author) => {
     const db = await initDB();
     const tx = db.transaction(POST_STORE, 'readwrite');
     const store = tx.objectStore(POST_STORE);
-
     const post = await store.get(postId);
-    if (post) {
-        post.content = updatedContent;
-        post.author = author;
-        post.updatedAt = new Date().toISOString();
-        await store.put(post);
-    }
-    await tx.done;
+
+    if (!post) throw new Error('Post not found');
+
+    post.content = updatedContent;
+    post.author = author;
+    post.updatedAt = new Date().toISOString();
+
+    await store.put(post);
     return post;
 };
 
 // Delete a post by ID and remove associated comments
 export const removePost = async (postId) => {
     const db = await initDB();
-    const tx = db.transaction([POST_STORE, COMMENT_STORE], 'readwrite');
+    const postTx = db.transaction([POST_STORE, COMMENT_STORE], 'readwrite');
+    const postStore = postTx.objectStore(POST_STORE);
+    const commentStore = postTx.objectStore(COMMENT_STORE);
 
-    // Delete the post
-    await tx.objectStore(POST_STORE).delete(postId);
+    await postStore.delete(postId);
 
-    // Delete associated comments
-    const commentStore = tx.objectStore(COMMENT_STORE);
     const comments = await commentStore.getAll();
-    comments.forEach(async (comment) => {
-        if (comment.postId === postId) {
-            await commentStore.delete(comment.id);
-        }
-    });
+    const postComments = comments.filter((comment) => comment.postId === postId);
 
-    await tx.done;
+    postComments.forEach(async (comment) => await commentStore.delete(comment.id));
+    await postTx.done;
 };
 
 // Comment-related functions
@@ -200,31 +168,23 @@ export const removePost = async (postId) => {
 // Add a comment to a post with an author
 export const addComment = async (postId, content, author) => {
     const db = await initDB();
-    const tx = db.transaction(COMMENT_STORE, 'readwrite');
-    const store = tx.objectStore(COMMENT_STORE);
-
     const comment = {
         id: uuidv4(),
-        postId: postId,
-        content: content,  // Correctly set content as a string
-        author: author,    // Correctly set author as a string
+        postId,
+        content,
+        author,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
 
-    await store.add(comment);
-    await tx.done;
-
+    await db.put(COMMENT_STORE, comment);
     return comment;
 };
 
 // Get comments for a specific post
 export const getComments = async (postId) => {
     const db = await initDB();
-    const tx = db.transaction(COMMENT_STORE, 'readonly');
-    const store = tx.objectStore(COMMENT_STORE);
-    const comments = await store.getAll();
-    await tx.done;
+    const comments = await db.getAll(COMMENT_STORE);
     return comments.filter((comment) => comment.postId === postId);
 };
 
@@ -233,29 +193,22 @@ export const editComment = async (id, content, author, postId) => {
     const db = await initDB();
     const tx = db.transaction(COMMENT_STORE, 'readwrite');
     const store = tx.objectStore(COMMENT_STORE);
-
-    // Ensure the id is used as the key to get the specific comment
     const comment = await store.get(id);
 
-    if (comment && comment.postId === postId) {  // Check that comment belongs to the postId
-        comment.content = content;
-        comment.author = author;
-        comment.updatedAt = new Date().toISOString(); // Update the updatedAt field
-        await store.put(comment); // Save the updated comment back to IndexedDB
-    } else {
-        throw new Error(`No comment found with ID: ${id} and postId: ${postId}`);
-    }
+    if (!comment || comment.postId !== postId) throw new Error('Comment not found');
 
-    await tx.done;
+    comment.content = content;
+    comment.author = author;
+    comment.updatedAt = new Date().toISOString();
+
+    await store.put(comment);
     return comment;
 };
 
 // Delete a comment by ID
 export const removeComment = async (commentId) => {
     const db = await initDB();
-    const tx = db.transaction(COMMENT_STORE, 'readwrite');
-    await tx.objectStore(COMMENT_STORE).delete(commentId);
-    await tx.done;
+    await db.delete(COMMENT_STORE, commentId);
 };
 
 // Delete all comments by postId
@@ -264,15 +217,23 @@ export const removeCommentsByPostId = async (postId) => {
     const tx = db.transaction(COMMENT_STORE, 'readwrite');
     const store = tx.objectStore(COMMENT_STORE);
 
-    // Get all comments
     const comments = await store.getAll();
+    const postComments = comments.filter((comment) => comment.postId === postId);
 
-    // Delete comments associated with the postId
-    comments.forEach(async (comment) => {
-        if (comment.postId === postId) {
-            await store.delete(comment.id);
-        }
-    });
-
+    postComments.forEach(async (comment) => await store.delete(comment.id));
     await tx.done;
+};
+
+// Search users by email or username
+export const searchUsers = async (query) => {
+    const db = await initDB();
+    const tx = db.transaction(USER_STORE, 'readonly');
+    const store = tx.objectStore(USER_STORE);
+    const allUsers = await store.getAll();
+
+    // Filter users based on query matching either username or email
+    return allUsers.filter((user) =>
+        user.username.toLowerCase().includes(query.toLowerCase()) ||
+        user.email.toLowerCase().includes(query.toLowerCase())
+    );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser } from '../store/userSlice';
+import { signupUser } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 
@@ -24,8 +24,8 @@ const Signup = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const signupStatus = useSelector((state) => state.user.signupStatus);
-  const signupError = useSelector((state) => state.user.error);
+  const signupStatus = useSelector((state) => state.auth.signupStatus);
+  const signupError = useSelector((state) => state.auth.error);
 
   const handleSignup = async (e) => {
     e.preventDefault();

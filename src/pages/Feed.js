@@ -1,41 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts, createPost, deletePost, updatePost } from '../store/postSlice';
-import { Button, Card, Container, Row, Col, Modal, Alert, FormControl } from 'react-bootstrap';
+import { fetchComments } from '../store/commentSlice'; // Action to fetch comments for each post
+import { Button, Card, Container, Row, Col, Modal, FormControl, Dropdown } from 'react-bootstrap';
 import Post from '../components/Post';
-import moment from 'moment'; // For formatting the post creation time
+import { fetchUser } from '../store/userSlice';
+import Feedback from '../components/Feedback';
 
 const Feed = () => {
     const dispatch = useDispatch();
     const posts = useSelector((state) => state.post.posts);
+    const comments = useSelector((state) => state.comment.comments); // Access all comments from Redux state
     const userInfo = useSelector((state) => state.user.userInfo); // Get user info from Redux
     const [postContent, setPostContent] = useState('');
     const [editingPostId, setEditingPostId] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [feedback, setFeedback] = useState({ type: '', message: '', show: false });
+    const [sortOrder, setSortOrder] = useState('latest'); // Default sort order is 'latest'
 
+    // Fetch posts and user info on mount
     useEffect(() => {
         dispatch(fetchPosts());
-    }, [dispatch]);
+    }, [dispatch, userInfo]);
+
+    // Fetch comments for each post
+    useEffect(() => {
+        if (posts && posts.length > 0) {
+            posts.forEach((post) => {
+                dispatch(fetchComments(post.id));
+            });
+        }
+    }, [dispatch, posts]);
+
+    // Sort posts by createdAt (latest or oldest)
+    const sortedPosts = [...posts].sort((a, b) => {
+        if (sortOrder === 'latest') {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return new Date(a.createdAt) - new Date(b.createdAt);
+    });
+
+    // Handle sorting change
+    const handleSortChange = (order) => {
+        setSortOrder(order);
+    };
 
     // Handle creating a new post
     const handleCreatePost = () => {
         if (postContent.trim()) {
             const newPost = {
-                content: postContent, // Passing content directly as a string
-                author: userInfo?.username || 'Anonymous', // Pass the author's username
+                content: postContent,
+                author: userInfo?.username || 'Anonymous',
             };
             dispatch(createPost(newPost))
                 .unwrap()
                 .then(() => {
-                    setSuccess('Post created successfully');
-                    setError(null);
+                    setFeedback({ type: 'success', message: 'Post created successfully', show: true });
                 })
-                .catch(() => setError('Failed to create post'));
+                .catch(() => setFeedback({ type: 'danger', message: 'Failed to create post', show: true }));
             setPostContent('');
         } else {
-            setError('Post content cannot be empty');
+            setFeedback({ type: 'danger', message: 'Post content cannot be empty', show: true });
         }
     };
 
@@ -44,16 +69,15 @@ const Feed = () => {
         dispatch(deletePost(postId))
             .unwrap()
             .then(() => {
-                setSuccess('Post deleted successfully');
-                setError(null);
+                setFeedback({ type: 'success', message: 'Post deleted successfully', show: true });
             })
-            .catch(() => setError('Failed to delete post'));
+            .catch(() => setFeedback({ type: 'danger', message: 'Failed to delete post', show: true }));
     };
 
     // Handle editing a post
     const handleEditPost = (postId, content) => {
         setEditingPostId(postId);
-        setPostContent(content); // Make sure to set the post content correctly here
+        setPostContent(content);
         setShowEditModal(true);
     };
 
@@ -62,25 +86,22 @@ const Feed = () => {
         if (postContent.trim()) {
             const updatedPost = {
                 id: editingPostId,
-                content: postContent, // Keep content as a string for the post
-                author: userInfo?.username || 'Anonymous', // Retain the author's username
-                updatedAt: new Date().toISOString(), // Add updated timestamp
+                content: postContent,
+                author: userInfo?.username || 'Anonymous',
+                updatedAt: new Date().toISOString(),
             };
 
-            // Dispatch the update post action
             dispatch(updatePost(updatedPost))
                 .unwrap()
                 .then(() => {
-                    setSuccess('Post updated successfully');
-                    setError(null);
+                    setFeedback({ type: 'success', message: 'Post updated successfully', show: true });
                 })
-                .catch(() => setError('Failed to update post'));
+                .catch(() => setFeedback({ type: 'danger', message: 'Failed to update post', show: true }));
 
-            // Close the modal and reset the post content
             setShowEditModal(false);
             setPostContent('');
         } else {
-            setError('Post content cannot be empty');
+            setFeedback({ type: 'danger', message: 'Post content cannot be empty', show: true });
         }
     };
 
@@ -88,10 +109,18 @@ const Feed = () => {
         <Container className="mt-4">
             <Row>
                 <Col md={12}>
+                    {/* Feedback Component */}
+                    <Feedback
+                        type={feedback.type}
+                        message={feedback.message}
+                        show={feedback.show}
+                        autoHide={true}
+                        duration={3000} // Auto-hide after 3 seconds
+                        onClose={() => setFeedback({ ...feedback, show: false })} // Close the feedback message
+                    />
+
                     <Card className="mb-3">
                         <Card.Body>
-                            {error && <Alert variant="danger">{error}</Alert>}
-                            {success && <Alert variant="success">{success}</Alert>}
                             <div className="mb-3">
                                 <FormControl
                                     as="textarea"
@@ -107,15 +136,34 @@ const Feed = () => {
                         </Card.Body>
                     </Card>
 
-                    {posts && posts.length > 0 ? (
-                        posts.map((post) => (
-                            <Post
-                                key={post.id}
-                                post={post}
-                                onDelete={() => handleDeletePost(post.id)}
-                                onEdit={() => handleEditPost(post.id, post.content)}
-                            />
-                        ))
+                    {/* Sort Dropdown - Below Add Post Box and Right Aligned */}
+                    <div className="d-flex justify-content-end mb-3">
+                        <Dropdown>
+                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                Sort by {sortOrder === 'latest' ? 'Latest' : 'Oldest'}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => handleSortChange('latest')}>Latest</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleSortChange('oldest')}>Oldest</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+
+                    {sortedPosts && sortedPosts.length > 0 ? (
+                        sortedPosts.map((post) => {
+                            const postComments = comments[post.id] || [];
+                            return (
+                                <Post
+                                    key={post.id}
+                                    post={post}
+                                    commentCount={postComments.length} // Pass the number of comments
+                                    onDelete={() => handleDeletePost(post.id)}
+                                    onEdit={() => handleEditPost(post.id, post.content)}
+                                    currentUser={userInfo} // Pass the current user info to handle author visibility
+                                />
+                            );
+                        })
                     ) : (
                         <p>No posts yet. Be the first to create one!</p>
                     )}

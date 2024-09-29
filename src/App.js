@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import AuthRoutes from './routes/AuthRoutes';
 import AppRoutes from './routes/AppRoutes';
-import { setToken, clearToken, fetchUser } from './store/userSlice'; // Import fetchUser
+import { setToken, clearToken } from './store/authSlice'; // Import fetchUser
+import { fetchUser } from './store/userSlice'; // Import fetchUser
 import { fetchPosts } from './store/postSlice'; // Action to fetch posts
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userInfo = useSelector((state) => state.user.userInfo); // Get userInfo from Redux
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -17,12 +19,16 @@ const App = () => {
     if (token) {
       const email = token.split('-')[0]; // Extract email from token (email-UUID format)
       dispatch(setToken(token)); // Set token in Redux
-      dispatch(fetchUser(email)); // Fetch user profile using extracted email
+
+      // Fetch user info only if it's null or undefined
+      if (!userInfo) {
+        dispatch(fetchUser(email)); // Fetch user profile using extracted email
+      }
     } else {
       dispatch(clearToken()); // Clear token if not found
     }
     setLoading(false);
-  }, [dispatch]);
+  }, [dispatch, userInfo]);
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
@@ -30,13 +36,11 @@ const App = () => {
     }
   }, [loading, isAuthenticated, dispatch]);
 
-  useEffect(() => {
-    if (!loading) {
-      // if (!isAuthenticated) {
-      //   navigate('/auth/login'); // Redirect to login if not authenticated
-      // }
-    }
-  }, [isAuthenticated, loading, navigate]);
+  // useEffect(() => {
+  //   if (!loading && !isAuthenticated) {
+  //     navigate('/auth/login'); // Redirect to login if not authenticated
+  //   }
+  // }, [isAuthenticated, loading, navigate]);
 
   if (loading) {
     return <div>Loading...</div>; // Add a spinner here if necessary

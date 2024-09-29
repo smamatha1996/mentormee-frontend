@@ -20,7 +20,23 @@
     font-size: 1.2rem;
     color: #f8f9fa;
     margin: 0 20px;
-    transition: color 0.3s;
+    transition: color 0.3s ease-in-out;
+    position: relative;
+
+    &.active {
+        color: #ffc107; // Highlight the active link
+        font-weight: 600;
+
+        &:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #ffc107; // Underline effect
+        }
+    }
 
     &:hover {
         color: #ffc107;
@@ -35,12 +51,19 @@
     color: #ffffff; // White text for visibility
     border: 2px solid #ffc107;
     background-color: transparent;
-    transition: all 0.3s;
+    transition: all 0.3s ease-in-out;
 
     &:hover {
         background-color: #ffc107;
         color: #343a40; // Dark gray on hover
     }
+}
+
+.user-name {
+    color: #f8f9fa;
+    font-size: 1.1rem;
+    margin-right: 15px;
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {

@@ -1,7 +1,7 @@
 .post-card {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
 }
 
 .post-header {
@@ -10,23 +10,31 @@
     align-items: center;
 }
 
+.post-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
 .post-content {
-    font-size: 1rem;
-    color: #495057;
-    word-wrap: break-word;
+    font-size: 16px;
+    margin-top: 10px;
+    line-height: 1.5;
 }
 
-.post-actions .edit-btn,
-.post-actions .delete-btn {
-    color: #6c757d;
-    transition: color 0.3s;
+.post-interactions {
+    display: flex;
+    align-items: center;
+    color: #888;
 }
 
-.post-actions .edit-btn:hover,
-.post-actions .delete-btn:hover {
-    color: #007bff;
+.post-interactions span {
+    margin-left: 4px;
 }
 
-.icon-comment {
-    color: #17a2b8;
+.me-3 {
+    margin-right: 12px;
+}
+
+.me-1 {
+    margin-right: 4px;
 }

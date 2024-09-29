@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const PrivateRoute = ({ children }) => {
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     console.log("PrivateRoute - isAuthenticated:", isAuthenticated); // Debug log
 
     if (!isAuthenticated) {

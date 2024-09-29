@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../store/userSlice';
+import { loginUser } from '../store/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button, Container, Row, Col, Alert, Card, FormControl, FormLabel } from 'react-bootstrap';
+import { Button, Container, Row, Col, Card, FormControl, FormLabel } from 'react-bootstrap';
+import Feedback from '../components/Feedback'; // Import the Feedback component
 
 const Login = () => {
   const [input, setInput] = useState(''); // For both email and username
@@ -12,8 +13,8 @@ const Login = () => {
   const [generalError, setGeneralError] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginStatus = useSelector((state) => state.user.loginStatus);
-  const loginError = useSelector((state) => state.user.error);
+  const loginStatus = useSelector((state) => state.auth.loginStatus);
+  const loginError = useSelector((state) => state.auth.error);
 
   const validateInput = (input) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,7 +62,18 @@ const Login = () => {
           <Card className="shadow p-4">
             <Card.Body>
               <h2 className="text-center mb-4">Login</h2>
-              {generalError && <Alert variant="danger">{generalError}</Alert>}
+
+              {/* Feedback for error message */}
+              {generalError && (
+                <Feedback
+                  variant="danger"
+                  message={generalError}
+                  show={!!generalError}
+                  autoHide={true}
+                  duration={3000} // Auto-hide after 3 seconds
+                  onClose={() => setGeneralError(null)} // Reset error after closing
+                />
+              )}
 
               <div className="mb-3">
                 <FormLabel>Email Address or Username</FormLabel>
