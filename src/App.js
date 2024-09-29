@@ -32,9 +32,9 @@ const App = () => {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated) {
-        navigate('/auth/login'); // Redirect to login if not authenticated
-      }
+      // if (!isAuthenticated) {
+      //   navigate('/auth/login'); // Redirect to login if not authenticated
+      // }
     }
   }, [isAuthenticated, loading, navigate]);
 
