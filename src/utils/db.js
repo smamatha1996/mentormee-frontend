@@ -6,7 +6,6 @@ const USER_STORE = 'users';
 const POST_STORE = 'posts';
 const COMMENT_STORE = 'comments';
 
-// Initialize the database
 export const initDB = async () => {
     const db = await openDB(DB_NAME, 1, {
         upgrade(db) {
@@ -24,7 +23,7 @@ export const initDB = async () => {
     return db;
 };
 
-// Helper: Check if user exists by email or username
+
 const checkUserExists = async (db, { email, username }) => {
     const store = db.transaction(USER_STORE, 'readonly').objectStore(USER_STORE);
     const existingUserByEmail = await store.get(email);
@@ -34,7 +33,7 @@ const checkUserExists = async (db, { email, username }) => {
     return { existingUserByEmail, existingUserByUsername };
 };
 
-// User Registration
+
 export const registerUser = async (user) => {
     const db = await initDB();
     const { existingUserByEmail, existingUserByUsername } = await checkUserExists(db, user);
@@ -53,7 +52,6 @@ export const registerUser = async (user) => {
     return newUser;
 };
 
-// User Login
 export const loginUser = async ({ input, password }) => {
     const db = await initDB();
     const store = db.transaction(USER_STORE, 'readonly').objectStore(USER_STORE);
@@ -77,13 +75,11 @@ export const loginUser = async ({ input, password }) => {
     return { user, token };
 };
 
-// Get the logged-in user by email
 export const getUser = async (email) => {
     const db = await initDB();
     return await db.get(USER_STORE, email);
 };
 
-// Update user profile
 export const updateUser = async (email, updatedUserData) => {
     const db = await initDB();
     const tx = db.transaction(USER_STORE, 'readwrite');
@@ -102,14 +98,10 @@ export const updateUser = async (email, updatedUserData) => {
     return updatedUser;
 };
 
-// Logout User
 export const logoutUser = () => {
     localStorage.removeItem('mentorMeeToken');
 };
 
-// Post-related functions
-
-// Add a post with an author
 export const addPost = async (content, author) => {
     const db = await initDB();
     const post = {
@@ -124,13 +116,11 @@ export const addPost = async (content, author) => {
     return post;
 };
 
-// Get all posts
 export const getPosts = async () => {
     const db = await initDB();
     return await db.getAll(POST_STORE);
 };
 
-// Edit a post with updated content and author
 export const editPost = async (postId, updatedContent, author) => {
     const db = await initDB();
     const tx = db.transaction(POST_STORE, 'readwrite');
@@ -147,7 +137,6 @@ export const editPost = async (postId, updatedContent, author) => {
     return post;
 };
 
-// Delete a post by ID and remove associated comments
 export const removePost = async (postId) => {
     const db = await initDB();
     const postTx = db.transaction([POST_STORE, COMMENT_STORE], 'readwrite');
@@ -163,9 +152,6 @@ export const removePost = async (postId) => {
     await postTx.done;
 };
 
-// Comment-related functions
-
-// Add a comment to a post with an author
 export const addComment = async (postId, content, author) => {
     const db = await initDB();
     const comment = {
@@ -181,14 +167,12 @@ export const addComment = async (postId, content, author) => {
     return comment;
 };
 
-// Get comments for a specific post
 export const getComments = async (postId) => {
     const db = await initDB();
     const comments = await db.getAll(COMMENT_STORE);
     return comments.filter((comment) => comment.postId === postId);
 };
 
-// Function to edit a comment in the IndexedDB
 export const editComment = async (id, content, author, postId) => {
     const db = await initDB();
     const tx = db.transaction(COMMENT_STORE, 'readwrite');
@@ -205,13 +189,11 @@ export const editComment = async (id, content, author, postId) => {
     return comment;
 };
 
-// Delete a comment by ID
 export const removeComment = async (commentId) => {
     const db = await initDB();
     await db.delete(COMMENT_STORE, commentId);
 };
 
-// Delete all comments by postId
 export const removeCommentsByPostId = async (postId) => {
     const db = await initDB();
     const tx = db.transaction(COMMENT_STORE, 'readwrite');
@@ -224,14 +206,12 @@ export const removeCommentsByPostId = async (postId) => {
     await tx.done;
 };
 
-// Search users by email or username
 export const searchUsers = async (query) => {
     const db = await initDB();
     const tx = db.transaction(USER_STORE, 'readonly');
     const store = tx.objectStore(USER_STORE);
     const allUsers = await store.getAll();
 
-    // Filter users based on query matching either username or email
     return allUsers.filter((user) =>
         user.username.toLowerCase().includes(query.toLowerCase()) ||
         user.email.toLowerCase().includes(query.toLowerCase())

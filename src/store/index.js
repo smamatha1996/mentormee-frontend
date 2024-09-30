@@ -9,7 +9,7 @@ const store = configureStore({
         auth: authReducer,
         user: userReducer,
         post: postReducer,
-        comment: commentReducer,  // Add comment reducer
+        comment: commentReducer,  
     },
 });
 

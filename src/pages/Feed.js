@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts, createPost, deletePost, updatePost } from '../store/postSlice';
-import { fetchComments } from '../store/commentSlice'; // Action to fetch comments for each post
+import { fetchComments } from '../store/commentSlice'; 
 import { Button, Card, Container, Row, Col, Modal, FormControl, Dropdown } from 'react-bootstrap';
 import Post from '../components/Post';
-import { fetchUser } from '../store/userSlice';
+//import { fetchUser } from '../store/userSlice';
 import Feedback from '../components/Feedback';
 
 const Feed = () => {
     const dispatch = useDispatch();
     const posts = useSelector((state) => state.post.posts);
-    const comments = useSelector((state) => state.comment.comments); // Access all comments from Redux state
-    const userInfo = useSelector((state) => state.user.userInfo); // Get user info from Redux
+    const comments = useSelector((state) => state.comment.comments); 
+    const userInfo = useSelector((state) => state.user.userInfo); 
     const [postContent, setPostContent] = useState('');
     const [editingPostId, setEditingPostId] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [feedback, setFeedback] = useState({ type: '', message: '', show: false });
-    const [sortOrder, setSortOrder] = useState('latest'); // Default sort order is 'latest'
+    const [sortOrder, setSortOrder] = useState('latest'); 
 
-    // Fetch posts and user info on mount
+    
     useEffect(() => {
         dispatch(fetchPosts());
     }, [dispatch, userInfo]);
 
-    // Fetch comments for each post
+    
     useEffect(() => {
         if (posts && posts.length > 0) {
             posts.forEach((post) => {
@@ -32,7 +32,7 @@ const Feed = () => {
         }
     }, [dispatch, posts]);
 
-    // Sort posts by createdAt (latest or oldest)
+    
     const sortedPosts = [...posts].sort((a, b) => {
         if (sortOrder === 'latest') {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -40,12 +40,12 @@ const Feed = () => {
         return new Date(a.createdAt) - new Date(b.createdAt);
     });
 
-    // Handle sorting change
+    
     const handleSortChange = (order) => {
         setSortOrder(order);
     };
 
-    // Handle creating a new post
+    
     const handleCreatePost = () => {
         if (postContent.trim()) {
             const newPost = {
@@ -64,7 +64,7 @@ const Feed = () => {
         }
     };
 
-    // Handle deleting a post
+   
     const handleDeletePost = (postId) => {
         dispatch(deletePost(postId))
             .unwrap()
@@ -74,14 +74,14 @@ const Feed = () => {
             .catch(() => setFeedback({ type: 'danger', message: 'Failed to delete post', show: true }));
     };
 
-    // Handle editing a post
+    
     const handleEditPost = (postId, content) => {
         setEditingPostId(postId);
         setPostContent(content);
         setShowEditModal(true);
     };
 
-    // Handle saving edited post
+   
     const handleSaveEdit = () => {
         if (postContent.trim()) {
             const updatedPost = {
@@ -109,14 +109,14 @@ const Feed = () => {
         <Container className="mt-4">
             <Row>
                 <Col md={12}>
-                    {/* Feedback Component */}
+                    {}
                     <Feedback
                         type={feedback.type}
                         message={feedback.message}
                         show={feedback.show}
                         autoHide={true}
-                        duration={3000} // Auto-hide after 3 seconds
-                        onClose={() => setFeedback({ ...feedback, show: false })} // Close the feedback message
+                        duration={3000} 
+                        onClose={() => setFeedback({ ...feedback, show: false })}
                     />
 
                     <Card className="mb-3">
@@ -136,7 +136,7 @@ const Feed = () => {
                         </Card.Body>
                     </Card>
 
-                    {/* Sort Dropdown - Below Add Post Box and Right Aligned */}
+                    {}
                     <div className="d-flex justify-content-end mb-3">
                         <Dropdown>
                             <Dropdown.Toggle variant="light" id="dropdown-basic">
@@ -157,10 +157,10 @@ const Feed = () => {
                                 <Post
                                     key={post.id}
                                     post={post}
-                                    commentCount={postComments.length} // Pass the number of comments
+                                    commentCount={postComments.length} 
                                     onDelete={() => handleDeletePost(post.id)}
                                     onEdit={() => handleEditPost(post.id, post.content)}
-                                    currentUser={userInfo} // Pass the current user info to handle author visibility
+                                    currentUser={userInfo} 
                                 />
                             );
                         })
@@ -170,7 +170,7 @@ const Feed = () => {
                 </Col>
             </Row>
 
-            {/* Edit Modal */}
+            {}
             <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Post</Modal.Title>

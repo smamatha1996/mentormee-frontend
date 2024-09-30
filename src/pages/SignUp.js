@@ -12,7 +12,7 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Error state for inline error messages
+  
   const [fieldErrors, setFieldErrors] = useState({
     firstName: '',
     lastName: '',
@@ -30,7 +30,6 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Reset field errors
     setFieldErrors({
       firstName: '',
       lastName: '',
@@ -89,7 +88,6 @@ const Signup = () => {
     }
   };
 
-  // Navigate to login after signup is successful
   useEffect(() => {
     if (signupStatus === 'succeeded') {
       navigate('/login');
@@ -105,7 +103,7 @@ const Signup = () => {
           <div className="shadow p-4 rounded bg-white">
             <h2 className="text-center mb-4">Sign Up</h2>
 
-            {/* Show form-level error if any */}
+            {}
             {fieldErrors.form && <Alert variant="danger">{fieldErrors.form}</Alert>}
 
             <Form onSubmit={handleSignup}>

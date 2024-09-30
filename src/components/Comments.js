@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchComments, addNewComment, deleteComment, updateComment } from '../store/commentSlice';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
-import Comment from './Comment'; // Import the new Comment component
-import './Comments.scss'; // Use SCSS for styling
+import Comment from './Comment'; 
+import './Comments.scss'; 
 
 const Comments = ({ postId, onCloseComments, isAuthor }) => {
     const dispatch = useDispatch();
     const comments = useSelector((state) => state.comment.comments[postId] || []);
-    const userInfo = useSelector((state) => state.user.userInfo); // Get current user info
+    const userInfo = useSelector((state) => state.user.userInfo);
     const [commentContent, setCommentContent] = useState('');
     const textareaRef = useRef(null);
 
@@ -16,11 +16,10 @@ const Comments = ({ postId, onCloseComments, isAuthor }) => {
         dispatch(fetchComments(postId));
     }, [dispatch, postId]);
 
-    // Function to auto-adjust textarea height
     const adjustTextareaHeight = () => {
         const textarea = textareaRef.current;
-        textarea.style.height = 'auto';  // Reset height
-        textarea.style.height = `${textarea.scrollHeight}px`;  // Set new height based on content
+        textarea.style.height = 'auto';  
+        textarea.style.height = `${textarea.scrollHeight}px`;  
     };
 
     const handleAddComment = () => {
@@ -56,7 +55,7 @@ const Comments = ({ postId, onCloseComments, isAuthor }) => {
                 />
             ))}
 
-            {/* Add New Comment */}
+            {}
             <div className="add-comment">
                 <div className="comment-input-container">
                     <InputGroup className="input-group">

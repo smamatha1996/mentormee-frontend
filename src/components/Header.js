@@ -1,17 +1,17 @@
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import { useNavigate, useLocation } from 'react-router-dom'; 
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/authSlice';
-import { FaRss, FaUser } from 'react-icons/fa'; // Import FaUser for Profile icon
+import { FaRss, FaUser } from 'react-icons/fa'; 
 import './Header.scss';
 
 const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const location = useLocation(); // Get current URL path
+    const location = useLocation(); 
 
-    // Access the user's first and last name from the Redux state
+   
     const userInfo = useSelector((state) => state.user.userInfo);
 
     const handleLogout = () => {

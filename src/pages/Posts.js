@@ -15,12 +15,11 @@ const Posts = () => {
     const [currentPostId, setCurrentPostId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Only fetch posts on mount
+   
     useEffect(() => {
         dispatch(fetchPosts());
     }, [dispatch]);
 
-    // Validation function for post content
     const validateContent = (content) => {
         const trimmedContent = content.trim();
         if (!trimmedContent) {
@@ -53,7 +52,7 @@ const Posts = () => {
                 setContent('');
                 setEditMode(false);
                 setCurrentPostId(null);
-                dispatch(fetchPosts()); // Fetch updated posts
+                dispatch(fetchPosts()); 
             } catch (err) {
                 toast.error(`Error: ${err.message}`);
             } finally {
@@ -63,11 +62,11 @@ const Posts = () => {
     };
 
     const handleEdit = (post) => {
-        console.log('Editing post:', post); // Log to ensure the post has a UUID as id
+        console.log('Editing post:', post);
         if (post && post.id) {
             setEditMode(true);
             setContent(post.content);
-            setCurrentPostId(post.id);  // Set the UUID as the current post ID
+            setCurrentPostId(post.id);  
         } else {
             console.error('Post ID not found:', post);
         }

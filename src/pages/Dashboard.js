@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { FaRegUser, FaClipboardList, FaCommentDots } from 'react-icons/fa';
-import { fetchPosts } from '../store/postSlice'; // Assuming you're using redux
-import './Dashboard.css';  // Custom styles for your Dashboard
+import { fetchPosts } from '../store/postSlice'; 
+import './Dashboard.css';  
 
 const Dashboard = () => {
     const dispatch = useDispatch();

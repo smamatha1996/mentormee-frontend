@@ -93,13 +93,13 @@ const Profile = () => {
         dispatch(sendFriendRequest({ fromUserEmail: email, toUserEmail }));
     };
 
-    // Accept Friend Request
+    
     const handleAcceptRequest = (requestId) => {
         dispatch(acceptFriendRequest(requestId))
             .then(() => dispatch(fetchFriends()));
     };
 
-    // Reject Friend Request
+   
     const handleRejectRequest = (requestId) => {
         dispatch(rejectFriendRequest(requestId));
     };
@@ -107,7 +107,7 @@ const Profile = () => {
     return (
         <Container className="my-5">
             <Row>
-                {/* Profile Section */}
+                {}
                 <Col xs={12} md={8}>
                     <Card className="shadow p-4">
                         <Card.Body>
@@ -166,9 +166,9 @@ const Profile = () => {
                     </Card>
                 </Col>
 
-                {/* Friends List and Suggested Friends */}
+                {}
                 <Col xs={12} md={4}>
-                    {/* Find Friends Section */}
+                    {}
                     <FindUsers
                         currentUserId={userInfo?.id}
                         searchQuery={searchQuery}
@@ -179,7 +179,7 @@ const Profile = () => {
                         sendFollowRequest={(toUserEmail) => dispatch(sendFollowRequest({ fromUserEmail: email, toUserEmail }))}
                     />
 
-                    {/* Friends List */}
+                    {}
                     <Card className="shadow mb-4">
                         <Card.Body>
                             <h4>Friends</h4>
@@ -197,7 +197,7 @@ const Profile = () => {
                         </Card.Body>
                     </Card>
 
-                    {/* Friend Requests */}
+                    {}
                     <Card className="shadow mb-4">
                         <Card.Body>
                             <h4>Friend Requests</h4>
@@ -231,7 +231,7 @@ const Profile = () => {
                         </Card.Body>
                     </Card>
 
-                    {/* Suggested Friends */}
+                    {}
                     <Card className="shadow">
                         <Card.Body>
                             <h4>Suggested Friends</h4>

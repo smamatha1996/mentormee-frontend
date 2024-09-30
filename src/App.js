@@ -3,36 +3,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import AuthRoutes from './routes/AuthRoutes';
 import AppRoutes from './routes/AppRoutes';
-import { setToken, clearToken } from './store/authSlice'; // Import fetchUser
-import { fetchUser } from './store/userSlice'; // Import fetchUser
-import { fetchPosts } from './store/postSlice'; // Action to fetch posts
+import { setToken, clearToken } from './store/authSlice'; 
+import { fetchUser } from './store/userSlice'; 
+import { fetchPosts } from './store/postSlice'; 
 
 const App = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const userInfo = useSelector((state) => state.user.userInfo); // Get userInfo from Redux
+  const userInfo = useSelector((state) => state.user.userInfo);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('mentorMeeToken');
     if (token) {
-      const email = token.split('-')[0]; // Extract email from token (email-UUID format)
-      dispatch(setToken(token)); // Set token in Redux
+      const email = token.split('-')[0]; 
+      dispatch(setToken(token)); 
 
-      // Fetch user info only if it's null or undefined
       if (!userInfo) {
-        dispatch(fetchUser(email)); // Fetch user profile using extracted email
+        dispatch(fetchUser(email)); 
       }
     } else {
-      dispatch(clearToken()); // Clear token if not found
+      dispatch(clearToken()); 
     }
     setLoading(false);
   }, [dispatch, userInfo]);
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      dispatch(fetchPosts()); // Fetch posts after authentication
+      dispatch(fetchPosts()); 
     }
   }, [loading, isAuthenticated, dispatch]);
 
@@ -43,7 +42,7 @@ const App = () => {
   // }, [isAuthenticated, loading, navigate]);
 
   if (loading) {
-    return <div>Loading...</div>; // Add a spinner here if necessary
+    return <div>Loading...</div>; 
   }
 
   return (

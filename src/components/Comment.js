@@ -1,22 +1,22 @@
 import React, { useState, useRef } from 'react';
 import { Button, FormControl, InputGroup, Row, Col } from 'react-bootstrap';
 import { MdEdit, MdDelete } from "react-icons/md";
-import { FaUserCircle } from 'react-icons/fa'; // Using FaUserCircle as profile icon
+import { FaUserCircle } from 'react-icons/fa'; 
 import moment from 'moment';
-import './Comment.scss'; // Use SCSS for styling
+import './Comment.scss'; 
 
 const Comment = ({ comment, isAuthor, userInfo, handleDelete, handleUpdate }) => {
-    const [editingCommentId, setEditingCommentId] = useState(null); // Track the comment being edited
-    const [editingContent, setEditingContent] = useState(''); // Track the content being edited
-    const textareaRef = useRef(null); // Ref for the textarea when editing
+    const [editingCommentId, setEditingCommentId] = useState(null); 
+    const [editingContent, setEditingContent] = useState(''); 
+    const textareaRef = useRef(null); 
 
-    // Handle edit button click
+    
     const handleEdit = (comment) => {
         setEditingCommentId(comment.id);
-        setEditingContent(comment.content); // Set the content to be edited
+        setEditingContent(comment.content); 
     };
 
-    // Save the edited comment
+
     const handleSaveEdit = () => {
         if (editingContent.trim()) {
             const updatedComment = {
@@ -26,31 +26,29 @@ const Comment = ({ comment, isAuthor, userInfo, handleDelete, handleUpdate }) =>
                 author: userInfo?.username || 'Anonymous',
             };
             handleUpdate(updatedComment);
-            setEditingCommentId(null); // Reset editing state
+            setEditingCommentId(null); 
             setEditingContent('');
         }
     };
 
-    // Cancel editing
     const handleCancelEdit = () => {
-        setEditingCommentId(null); // Exit editing mode
-        setEditingContent(''); // Clear editing content
+        setEditingCommentId(null); 
+        setEditingContent(''); 
     };
 
-    // Function to auto-adjust textarea height
     const adjustTextareaHeight = () => {
         const textarea = textareaRef.current;
-        textarea.style.height = 'auto';  // Reset height
-        textarea.style.height = `${textarea.scrollHeight}px`;  // Set new height based on content
+        textarea.style.height = 'auto';  
+        textarea.style.height = `${textarea.scrollHeight}px`;  
     };
 
     return (
         <div className="comment-card mb-3">
             <Row className="align-items-start">
                 <Col xs="auto">
-                    <FaUserCircle size={30} className="comment-user-icon" /> {/* Replaced image with icon */}
+                    <FaUserCircle size={30} className="comment-user-icon" /> {}
                 </Col>
-                <Col className="flex-grow-1"> {/* This will make this column take up the remaining space */}
+                <Col className="flex-grow-1"> {}
                     <div className="comment-content">
                         <div className="d-flex justify-content-between">
                             <div>
@@ -59,7 +57,7 @@ const Comment = ({ comment, isAuthor, userInfo, handleDelete, handleUpdate }) =>
                                     • {moment(comment.createdAt).fromNow()}
                                 </small>
                             </div>
-                            {/* Show edit and delete buttons only if the current user is the comment author */}
+                            {}
                             {isAuthor || userInfo?.username === comment.author ? (
                                 <div className="comment-actions">
                                     <Button variant="link" onClick={() => handleEdit(comment)} title="Edit">

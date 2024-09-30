@@ -4,7 +4,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    max-width: 400px; // Optional, based on your layout
+    max-width: 400px; 
 
     .search-input {
         border: none;
@@ -16,7 +16,7 @@
     }
 
     .search-input::placeholder {
-        color: #6c757d; // A light gray color
+        color: #6c757d; 
     }
 
     .search-btn {

@@ -1,31 +1,30 @@
 import React, { useState } from 'react';
 import { Button, Card } from 'react-bootstrap';
-import { BiCommentDetail } from 'react-icons/bi'; // Icons for actions
-import { FaUserCircle } from 'react-icons/fa'; // Using FaUserCircle as profile icon
+import { BiCommentDetail } from 'react-icons/bi'; 
+import { FaUserCircle } from 'react-icons/fa'; 
 import Comments from './Comments';
 import moment from 'moment';
-import './Post.css'; // Custom CSS for layout improvements
+import './Post.css'; 
 import { MdDelete, MdEdit } from 'react-icons/md';
 
 const Post = ({ post, commentCount = 0, onDelete, onEdit, currentUser }) => {
-    const [showComments, setShowComments] = useState(false); // State to toggle comment visibility
+    const [showComments, setShowComments] = useState(false); 
 
-    // Toggle comments visibility
+    
     const handleToggleComments = () => {
         setShowComments(!showComments);
     };
 
-    console.log(currentUser, "currentUser"); // Debug log
-    console.log(post, "post"); // Debug log
+    console.log(currentUser, "currentUser"); 
+    console.log(post, "post");
 
-    // Determine if the current user is the author of the post
     const isAuthor = currentUser?.username === post.author;
 
     return (
         <Card className="mb-4 post-card">
             <Card.Body>
                 <div className="d-flex align-items-center post-header mb-3">
-                    <FaUserCircle size={40} className="me-3" /> {/* Replaced with icon */}
+                    <FaUserCircle size={40} className="me-3" /> {}
                     <div className="post-author-info flex-grow-1">
                         <div>
                             <strong>{post.author || 'Anonymous'}</strong>
@@ -36,11 +35,11 @@ const Post = ({ post, commentCount = 0, onDelete, onEdit, currentUser }) => {
                             )}
                         </div>
                         <small className="text-muted">
-                            {moment(post.createdAt).fromNow()} {/* Displaying duration (e.g., "2 hours ago") */}
+                            {moment(post.createdAt).fromNow()} {}
                         </small>
                     </div>
 
-                    {/* Reserve space for edit and delete buttons, even if not shown */}
+                    {}
                     <div className={`ms-auto d-flex ${isAuthor ? '' : 'invisible'}`}>
                         <Button variant="link" onClick={onEdit} className="p-0">
                             <MdEdit size={20} title="Edit Post" />
@@ -53,7 +52,7 @@ const Post = ({ post, commentCount = 0, onDelete, onEdit, currentUser }) => {
 
                 <p className="post-content">{post.content}</p>
 
-                {/* Post interactions (Likes, Comments, Shares) */}
+                {}
                 <div className="post-interactions d-flex align-items-center mt-3">
                     <div className="d-flex align-items-center me-3">
                         <Button variant="link" onClick={handleToggleComments} className="p-0">
@@ -63,7 +62,7 @@ const Post = ({ post, commentCount = 0, onDelete, onEdit, currentUser }) => {
                     </div>
                 </div>
 
-                {/* Comments Section (conditionally rendered) */}
+                {}
                 {showComments && (
                     <div className="mt-3">
                         <Comments postId={post.id} isAuthor={isAuthor} onCloseComments={handleToggleComments} />

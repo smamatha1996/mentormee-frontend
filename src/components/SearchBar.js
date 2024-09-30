@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import './SearchBar.scss';  // Custom SCSS for styling
+import './SearchBar.scss';
 
 const SearchBar = ({ searchQuery, handleSearchChange }) => {
     return (

@@ -1,17 +1,14 @@
 import { addPost, getPosts, removePost, editPost } from '../utils/db';
 
-// Create a new post with content and author as separate arguments
 export const createPost = async (content, author) => {
     try {
-        const newPost = await addPost(content, author); // Pass content and author separately
-        return newPost;
+        const newPost = await addPost(content, author); 
     } catch (error) {
         console.error("Failed to create post:", error);
         throw new Error("Could not create post");
     }
 };
 
-// Fetch all posts
 export const fetchPosts = async () => {
     try {
         return await getPosts();
@@ -21,7 +18,6 @@ export const fetchPosts = async () => {
     }
 };
 
-// Delete a post by its ID
 export const deletePost = async (postId) => {
     try {
         await removePost(postId);
@@ -32,10 +28,9 @@ export const deletePost = async (postId) => {
     }
 };
 
-// Update a post with separate content and author arguments
 export const updatePost = async (id, content, author) => {
     try {
-        const updatedPost = await editPost(id, content, author); // Pass content and author separately
+        const updatedPost = await editPost(id, content, author); 
         return updatedPost;
     } catch (error) {
         console.error("Failed to update post:", error);

@@ -1,6 +1,5 @@
 import { registerUser as registerUserService, loginUser as loginService } from '../utils/db';
 
-// Signup a user using IndexedDB
 export const signupUser = async (userData) => {
     try {
         const user = await registerUserService(userData);
@@ -10,7 +9,6 @@ export const signupUser = async (userData) => {
     }
 };
 
-// Login a user using IndexedDB
 export const loginUser = async ({ input, password }) => {
     try {
         const { user, token } = await loginService({ input, password });

@@ -24,7 +24,7 @@
     position: relative;
 
     &.active {
-        color: #ffc107; // Highlight the active link
+        color: #ffc107; 
         font-weight: 600;
 
         &:after {
@@ -34,7 +34,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background-color: #ffc107; // Underline effect
+            background-color: #ffc107; 
         }
     }
 
@@ -48,14 +48,14 @@
     border-radius: 25px;
     padding: 10px 20px;
     font-weight: 500;
-    color: #ffffff; // White text for visibility
+    color: #ffffff;
     border: 2px solid #ffc107;
     background-color: transparent;
     transition: all 0.3s ease-in-out;
 
     &:hover {
         background-color: #ffc107;
-        color: #343a40; // Dark gray on hover
+        color: #343a40;
     }
 }
 

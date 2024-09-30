@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 
 const Feedback = ({
-    variant = 'success', // Default variant
+    variant = 'success', 
     message,
-    show = false, // Control visibility
-    onClose, // Function to handle close
-    autoHide = false, // Enable auto-hide
-    duration = 3000, // Duration for auto-hide in milliseconds
+    show = false,
+    onClose,
+    autoHide = false, 
+    duration = 3000, 
 }) => {
     const [visible, setVisible] = useState(show);
 
@@ -16,14 +16,14 @@ const Feedback = ({
             setVisible(true);
         }
 
-        // Auto-hide logic
+        
         if (show && autoHide) {
             const timer = setTimeout(() => {
                 setVisible(false);
                 if (onClose) onClose();
             }, duration);
 
-            // Clear timeout on component unmount or when alert hides
+            
             return () => clearTimeout(timer);
         }
     }, [show, autoHide, duration, onClose]);

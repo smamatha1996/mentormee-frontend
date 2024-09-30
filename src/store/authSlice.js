@@ -1,12 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { signupUser as signupService, loginUser as loginService } from '../services/authService';
 
-// Async thunk for signup
 export const signupUser = createAsyncThunk('auth/signup', async (userData) => {
     return await signupService(userData);
 });
-
-// Async thunk for login
 export const loginUser = createAsyncThunk('auth/login', async (userData) => {
     return await loginService(userData);
 });
@@ -14,8 +11,8 @@ export const loginUser = createAsyncThunk('auth/login', async (userData) => {
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        token: localStorage.getItem('mentorMeeToken') || null, // Initialize from localStorage
-        isAuthenticated: !!localStorage.getItem('mentorMeeToken'), // Auth status
+        token: localStorage.getItem('mentorMeeToken') || null,
+        isAuthenticated: !!localStorage.getItem('mentorMeeToken'), 
         signupStatus: 'idle',
         loginStatus: 'idle',
         error: null,
@@ -28,17 +25,16 @@ const authSlice = createSlice({
         clearToken: (state) => {
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem('mentorMeeToken'); // Remove token from localStorage
+            localStorage.removeItem('mentorMeeToken'); 
         },
         logout: (state) => {
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem('mentorMeeToken'); // Remove token from localStorage
+            localStorage.removeItem('mentorMeeToken'); 
         },
     },
     extraReducers: (builder) => {
         builder
-            // Signup Handlers
             .addCase(signupUser.pending, (state) => {
                 state.signupStatus = 'loading';
             })
@@ -50,7 +46,6 @@ const authSlice = createSlice({
                 state.error = action.error.message;
             })
 
-            // Login Handlers
             .addCase(loginUser.pending, (state) => {
                 state.loginStatus = 'loading';
             })
@@ -59,7 +54,7 @@ const authSlice = createSlice({
                 state.loginStatus = 'succeeded';
                 state.token = token;
                 state.isAuthenticated = true;
-                localStorage.setItem('mentorMeeToken', token); // Save token to localStorage
+                localStorage.setItem('mentorMeeToken', token); 
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loginStatus = 'failed';

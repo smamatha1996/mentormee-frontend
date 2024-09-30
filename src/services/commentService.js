@@ -1,9 +1,7 @@
 import { addComment, getComments, removeComment, editComment } from '../utils/db';
 
-// Create a new comment
 export const createComment = async (commentData) => {
     try {
-        // Add the new comment to the database
         const newComment = await addComment(commentData.postId, commentData.content, commentData.author);
         return newComment;
     } catch (error) {
@@ -12,10 +10,8 @@ export const createComment = async (commentData) => {
     }
 };
 
-// Fetch comments for a specific post
 export const fetchComments = async (postId) => {
     try {
-        // Get all comments for the specified postId
         return await getComments(postId);
     } catch (error) {
         console.error("Failed to fetch comments:", error);
@@ -23,10 +19,8 @@ export const fetchComments = async (postId) => {
     }
 };
 
-// Delete a comment by its ID
 export const deleteComment = async (commentId) => {
     try {
-        // Remove the comment from the database
         await removeComment(commentId);
         return commentId;
     } catch (error) {
@@ -35,10 +29,8 @@ export const deleteComment = async (commentId) => {
     }
 };
 
-// Update an existing comment
 export const updateComment = async (id, content, author, postId) => {
     try {
-        // Update the comment in the database
         const updatedComment = await editComment(id, content, author, postId);
         return updatedComment;
     } catch (error) {

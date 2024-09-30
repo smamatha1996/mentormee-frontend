@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Container, Row, Col, Card, FormControl, FormLabel } from 'react-bootstrap';
-import Feedback from '../components/Feedback'; // Import the Feedback component
+import Feedback from '../components/Feedback'; 
 
 const Login = () => {
-  const [input, setInput] = useState(''); // For both email and username
+  const [input, setInput] = useState(''); 
   const [password, setPassword] = useState('');
   const [inputError, setInputError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -18,7 +18,7 @@ const Login = () => {
 
   const validateInput = (input) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(input) || input.trim().length > 0; // Allow both email and non-empty username
+    return emailRegex.test(input) || input.trim().length > 0; 
   };
 
   const handleLogin = async () => {
@@ -63,15 +63,15 @@ const Login = () => {
             <Card.Body>
               <h2 className="text-center mb-4">Login</h2>
 
-              {/* Feedback for error message */}
+              {}
               {generalError && (
                 <Feedback
                   variant="danger"
                   message={generalError}
                   show={!!generalError}
                   autoHide={true}
-                  duration={3000} // Auto-hide after 3 seconds
-                  onClose={() => setGeneralError(null)} // Reset error after closing
+                  duration={3000} 
+                  onClose={() => setGeneralError(null)} 
                 />
               )}
 
